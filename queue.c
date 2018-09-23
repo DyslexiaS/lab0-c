@@ -11,8 +11,8 @@
  * It uses a singly-linked list to represent the set of queue elements
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "harness.h"
@@ -50,8 +50,13 @@ bool q_insert_head(queue_t *q, char *s)
     list_ele_t *newh;
     /* What should you do if the q is NULL? */
     newh = malloc(sizeof(list_ele_t));
+    if (q == NULL || newh == NULL)
+        return false;
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
+    newh->value = strdup(s);
+    if (newh->value == NULL)
+        return false;
     newh->next = q->head;
     q->head = newh;
     return true;
@@ -83,8 +88,17 @@ bool q_insert_tail(queue_t *q, char *s)
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
     /* You need to fix up this code. */
-    q->head = q->head->next;
-    return true;
+    if (q == NULL || q->head == NULL)
+        return false;
+    else if (sp != NULL) {
+        strncpy(sp, (q->head)->value, bufsize - 1);
+        list_ele_t *tmp;
+        tmp = q->head;
+        q->head = q->head->next;
+        free(tmp);
+        return true;
+    }
+    return false;
 }
 
 /*
